@@ -59,11 +59,50 @@
             instance="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcInspectionConfigurable" />
     </extensions>
     <actions>
-        <!-- Optional: a menu action to run checks on demand -->
-        <action class="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunChecksNowAction"
-            description="Run the FTC inspection suite now"
-            id="FTC.RunChecksNow" text="Run FTC Checks Now">
-            <add-to-group anchor="last" group-id="ToolsMenu" />
+
+        <action
+            id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele"
+            class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele"
+            text="New TeleOp"
+            description="Creates a new TeleOp OpMode class"
+            icon="AllIcons.Actions.GroupByModule">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+
+        <action
+            id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous"
+            class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous"
+            text="New Autonomous"
+            description="Creates a new Autonomous OpMode class"
+            icon="AllIcons.Actions.GroupByModule">
+            <add-to-group group-id="NewGroup" anchor="last"/>
+        </action>
+
+        <!-- New: Tools > Connect over Wi‑Fi Direct (runs `adb connect`) -->
+        <action
+            id="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction"
+            class="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction"
+            text="Connect over Wi‑Fi Direct"
+            description="Run 'adb connect &lt;ip:port&gt;' to connect to the robot over Wi‑Fi Direct">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+
+        <!-- New: Tools > Disconnect Wi‑Fi Device (runs `adb disconnect [ip:port]`) -->
+        <action
+            id="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction"
+            class="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction"
+            text="Disconnect Wi‑Fi Device"
+            description="Run 'adb disconnect [ip:port]' to disconnect a device or all if omitted">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+
+        <!-- New: Tools > Kill ADB Server (runs `adb kill-server`) -->
+        <action
+            id="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction"
+            class="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction"
+            text="Kill ADB Server"
+            description="Run 'adb kill-server' to stop the ADB daemon">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
 </idea-plugin>

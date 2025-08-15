@@ -1,6 +1,6 @@
 package com.gentrifiedapps.ftc_intellij_plugin.inspections
 
-import com.gentrifiedapps.ftc_intellij_plugin.FtcUtil
+import com.gentrifiedapps.ftc_intellij_plugin.utils.FtcUtil
 import com.intellij.codeInspection.AbstractBaseUastLocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder

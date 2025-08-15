@@ -7,7 +7,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.project.Project
 import com.intellij.psi.*
-import com.gentrifiedapps.ftc_intellij_plugin.FtcUtil
+import com.gentrifiedapps.ftc_intellij_plugin.utils.FtcUtil
 
 class FtcMissingOpModeAnnotationInspection : LocalInspectionTool() {
     override fun getGroupDisplayName(): String = "FTC Linter"

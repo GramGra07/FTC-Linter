@@ -1,10 +1,8 @@
 // ftc-intellij-plugin/build.gradle.kts
 plugins {
-    // IntelliJ Platform Gradle Plugin (2.x)
+    id("java")
     id("org.jetbrains.intellij.platform") version "2.7.2"
     kotlin("jvm") version "2.1.20"
-
-//    kotlin("jvm")
 }
 
 group = "com.gentrifiedapps.ftclinter"
@@ -12,36 +10,31 @@ version = "0.0.1"
 
 repositories {
     mavenCentral()
+    // Repositories required by the IntelliJ Platform Gradle Plugin 2.x
     intellijPlatform { defaultRepositories() }
 }
 
+// Remove legacy `intellij {}` (1.x) configuration; use 2.x DSL below
+
+// Declare IntelliJ Platform dependencies and target Android Studio Narwhal Feature Drop 2025.1.2
 dependencies {
     intellijPlatform {
-//        local("C:\\Users\\grade\\AppData\\Local\\Programs\\Android Studio")
-
         androidStudio("2025.1.2.11")
-
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
     }
 }
 
-// IntelliJ Platform (2.x) configuration — replaces old `patchPluginXml {}` usage
+// Configure plugin metadata injection (since/until build)
 intellijPlatform {
     pluginConfiguration {
         ideaVersion {
-            sinceBuild.set("241")
+            sinceBuild.set("251")
             untilBuild.set("251.*")
         }
     }
-    // Configure Plugin Verifier IDEs so :verifyPlugin can run
-    pluginVerification {
-        ides {
-            // Android Studio Beetle (2025.1) build line used by the sandbox in this project
-            ide("IC-2022.1")
-        }
-    }
 }
+
 kotlin {
     jvmToolchain(17)
 }
@@ -49,13 +42,4 @@ kotlin {
 // build.gradle.kts
 tasks.named<Jar>("jar") {
     destinationDirectory.set(file("C:\\Users\\grade\\Downloads\\repos\\FTC-Linter\\releases"))
-}
-
-tasks.withType<Zip>().configureEach {
-    if (name == "buildPlugin") {
-        from("build/tmp/patchPluginXml") {
-            include("plugin.xml")
-            into("/")
-        }
-    }
 }
