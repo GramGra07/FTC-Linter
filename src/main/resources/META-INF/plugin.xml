@@ -1,15 +1,69 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<!-- src/main/resources/META-INF/plugin.xml -->
 <idea-plugin>
-    <id>com.github.gramgra07.ftclinter</id>
-    <name>FTC-Linter</name>
-    <vendor>gramgra07</vendor>
+    <id>com.gentrifiedapps.ftc_intellij_plugin</id>
+    <name>FTC Linter</name>
+    <vendor email="gentrified.apps@gmail.com">GentrifiedApps</vendor>
+    <description>Expansive inspections for FTC Java projects (IntelliJ / Android
+        Studio).
+    </description>
+    <change-notes>FIRST release</change-notes>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <!-- REMOVE the <idea-version .../> line entirely; Gradle injects it -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.gramgra07.ftclinter.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="com.github.gramgra07.ftclinter.startup.MyProjectActivity" />
+        <notificationGroup displayType="BALLOON" id="FTC" isLogByDefault="true" />
+
+
+        <localInspection displayName="Accessing hardwareMap in constructor" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcHardwareInConstructorInspection"
+            language="JAVA"
+            shortName="FtcHardwareInConstructor" />
+        <localInspection displayName="hardwareMap access in field initializer" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcFieldInitializerHardwareInspection"
+            language="JAVA"
+            shortName="FtcFieldInitializerHardware" />
+        <localInspection displayName="telemetry.addData without telemetry.update()" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcTelemetryUpdateInspection"
+            language="JAVA"
+            shortName="FtcTelemetryUpdate" />
+
+        <localInspection displayName="Thread.sleep() used in OpMode" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcThreadSleepInspection"
+            language="JAVA"
+            shortName="FtcThreadSleep" />
+        <localInspection displayName="Accessing gamepad in constructor/initializer" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcGamepadInConstructorInspection"
+            language="JAVA"
+            shortName="FtcGamepadInConstructor" />
+        <localInspection displayName="Public OpMode missing @TeleOp/@Autonomous" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingOpModeAnnotationInspection"
+            language="JAVA" shortName="FtcMissingOpModeAnnotation" />
+        <localInspection displayName="Missing waitForStart() in LinearOpMode" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingWaitForStartInLinearInspection"
+            language="JAVA"
+            shortName="FtcMissingWaitForStartInLinear" />
+        <localInspection displayName="Nested while inside while(opModeIsActive())" enabledByDefault="true"
+            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcNestedWhileInActiveLoopInspection"
+            language="JAVA"
+            shortName="FtcNestedWhileInActiveLoop" />
+
+        <postStartupActivity
+            implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
+<!--        <beforeRunTaskProvider-->
+<!--            implementationClass="com.gentrifiedapps.ftc_intellij_plugin.settings.FtcBeforeRunTaskProvider" />-->
+        <projectConfigurable
+            displayName="FTC Checks"
+            instance="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcInspectionConfigurable" />
     </extensions>
+    <actions>
+        <!-- Optional: a menu action to run checks on demand -->
+        <action class="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunChecksNowAction"
+            description="Run the FTC inspection suite now"
+            id="FTC.RunChecksNow" text="Run FTC Checks Now">
+            <add-to-group anchor="last" group-id="ToolsMenu" />
+        </action>
+    </actions>
 </idea-plugin>
