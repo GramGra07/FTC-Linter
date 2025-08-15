@@ -7,3 +7,7 @@ The FTC Linter is a tool designed to help FTC teams go about their day-to-day co
 All you need to do is install the plugin into your IDE, available for Android Studio.
 
 [Click here to install the FTC Linter Plugin](https://plugins.jetbrains.com/plugin/28218-ftc-linter).
+
+If that doesn't work, you can also download the plugin from the archives and add the plugin manually:
+
+[https://github.com/GramGra07/FTC-Linter/tree/main/releases](https://github.com/GramGra07/FTC-Linter/tree/main/releases)

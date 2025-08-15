@@ -1,28 +1,31 @@
-<html>
+<html lang="en">
 <body>
-Write your description here.
-Start the description with a verb in 3rd person singular, like reports, detects, highlights.
-In the first sentence, briefly explain what exactly the inspection helps you detect.
-Make sure the sentence is not very long and complicated.
-<p>
-    The first sentence must be in a dedicated paragraph separated from the rest of the text. This
-    will make the description easier to read.
-    Make sure the description doesn’t just repeat the inspection title.
-</p>
-<p>
-    See https://plugins.jetbrains.com/docs/intellij/inspections.html#descriptions for more
-    information.
-</p>
-<p>
-    Embed code snippets:
-</p>
-<pre><code>
-// automatically highlighted according to inspection registration 'language' attribute
-</code></pre>
+<p>Reports use of gamepad1 or gamepad2 inside an OpMode constructor or class initializer.</p>
+<p>Controller input should be read during the OpMode loop, not during object construction or static initialization.</p>
 <!-- tooltip end -->
-<p>Text after this comment will only be shown in the settings of the inspection.</p>
-
-<p>To open related settings directly from the description, add a link with `settings://$` optionally
-    followed by `?$` to pre-select a UI element.</p>
+<p><b>Why it matters</b>: During construction/initialization the OpMode hasn’t started and gamepad state may be uninitialized or stale. Reading it there can give wrong values or crash later assumptions.</p>
+<p><b>Triggered when</b>: A constructor or class initializer in a class recognized as an OpMode references gamepad1 or gamepad2.</p>
+<p><b>Quick fix</b>: Delete statement removes the offending statement. Move input handling into runOpMode() (LinearOpMode) or loop() (Iterative).</p>
+<p><b>Bad</b>:</p>
+<pre><code>public class Drive extends LinearOpMode {
+    boolean slow = false;
+    public Drive() {
+        slow = gamepad1.left_bumper; // not safe here
+    }
+    @Override public void runOpMode() { /* ... */ }
+}
+</code></pre>
+<p><b>Good</b>:</p>
+<pre><code>public class Drive extends LinearOpMode {
+    boolean slow = false;
+    @Override public void runOpMode() {
+        waitForStart();
+        while (opModeIsActive()) {
+            slow = gamepad1.left_bumper; // read during loop
+            telemetry.update();
+        }
+    }
+}
+</code></pre>
 </body>
 </html>
