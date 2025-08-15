@@ -6,4 +6,4 @@ The disconnect extension is used to disconnect from the robot, this is useful if
 
 The kill-server extension is used to kill the ADB server if you need to reset it. This is useful if you are having issues with ADB and need to reset it.
 
-<video alt="Watch the demo video" src="adbDemo.mp4"></video>
+[Watch the demo video](https://youtu.be/mRjaWt2bO7U)
