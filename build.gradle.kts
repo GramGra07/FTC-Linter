@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.gentrifiedapps.ftclinter"
-version = "0.0.0"
+version = "0.0.1"
 
 repositories {
     mavenCentral()
@@ -17,9 +17,9 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        local("C:\\Users\\grade\\AppData\\Local\\Programs\\Android Studio")
+//        local("C:\\Users\\grade\\AppData\\Local\\Programs\\Android Studio")
 
-//         androidStudio("2025.1.2.11")
+        androidStudio("2025.1.2.11")
 
         bundledPlugin("com.intellij.java")
         bundledPlugin("org.jetbrains.kotlin")
@@ -48,7 +48,7 @@ kotlin {
 
 // build.gradle.kts
 tasks.named<Jar>("jar") {
-    destinationDirectory.set(file("C:\\Users\\grade\\Downloads"))
+    destinationDirectory.set(file("C:\\Users\\grade\\Downloads\\repos\\FTC-Linter\\releases"))
 }
 
 tasks.withType<Zip>().configureEach {
