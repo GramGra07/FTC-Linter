@@ -1,7 +1,7 @@
 # New-Classes
 
 
-<video width="640" height="360" controls src="newClassDemo.mp4">
+<video src="newClassDemo.mp4">
   Your browser does not support the video tag.
 </video>
 
