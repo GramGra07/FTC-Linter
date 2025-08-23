@@ -2,22 +2,26 @@
 plugins {
     id("java")
     id("org.jetbrains.intellij.platform") version "2.7.2"
+//    id("org.openjfx.javafxplugin") version "0.1.0"
     kotlin("jvm") version "2.1.20"
 }
 
 group = "com.gentrifiedapps.ftclinter"
-version = "0.0.2"
+version = "0.0.3"
 
 repositories {
     mavenCentral()
     // Repositories required by the IntelliJ Platform Gradle Plugin 2.x
     intellijPlatform { defaultRepositories() }
 }
-
-// Remove legacy `intellij {}` (1.x) configuration; use 2.x DSL below
-
+val javafxVersion = "21.0.5"
 // Declare IntelliJ Platform dependencies and target Android Studio Narwhal Feature Drop 2025.1.2
 dependencies {
+    listOf("base", "graphics", "controls", "web","swing","media").forEach { m ->
+        implementation("org.openjfx:javafx-$m:$javafxVersion:win")
+        implementation("org.openjfx:javafx-$m:$javafxVersion:mac")
+        implementation("org.openjfx:javafx-$m:$javafxVersion:linux")
+    }
     intellijPlatform {
         androidStudio("2025.1.2.11")
         bundledPlugin("com.intellij.java")

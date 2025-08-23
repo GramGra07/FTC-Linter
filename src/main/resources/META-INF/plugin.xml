@@ -15,7 +15,13 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FTC" isLogByDefault="true" />
+        <toolWindow
+            id="FTC Dashboard"
+            anchor="right"
+            factoryClass="com.gentrifiedapps.ftc_intellij_plugin.actions.WebsiteToolWindowFactory"
 
+        icon= "/icons/pluginIcon.svg"
+            secondary="false"/>
 
         <localInspection displayName="Accessing hardwareMap in constructor" enabledByDefault="true"
             groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcHardwareInConstructorInspection"
@@ -54,9 +60,9 @@
             implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
 <!--        <beforeRunTaskProvider-->
 <!--            implementationClass="com.gentrifiedapps.ftc_intellij_plugin.settings.FtcBeforeRunTaskProvider" />-->
-        <projectConfigurable
-            displayName="FTC Checks"
-            instance="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcInspectionConfigurable" />
+<!--        <projectConfigurable-->
+<!--            displayName="FTC Checks"-->
+<!--            instance="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcInspectionConfigurable" />-->
     </extensions>
     <actions>
 
