@@ -11,10 +11,9 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.modules.java</depends>
 
-    <!-- REMOVE the <idea-version .../> line entirely; Gradle injects it -->
-
     <extensions defaultExtensionNs="com.intellij">
-        <notificationGroup displayType="BALLOON" id="FTC" isLogByDefault="true" />
+        <notificationGroup displayType="BALLOON" id="FTC Linter" isLogByDefault="true" />
+        <!-- Used by ADB actions -->
         <toolWindow
             id="FTC Dashboard"
             anchor="right"
@@ -22,7 +21,14 @@
 
         icon= "/icons/pluginIcon.svg"
             secondary="false"/>
-
+        <localInspection
+            language=""
+            shortName="FtcDualTeamCodeIdentifier"
+            displayName="Multiple TeamCode packages detected"
+            groupPath="FTC Linter"
+            enabledByDefault="true"
+            level="ERROR"
+            implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcDualTeamCodeIdentifier"/>
         <localInspection displayName="Accessing hardwareMap in constructor" enabledByDefault="true"
             groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcHardwareInConstructorInspection"
             language="JAVA"
@@ -49,7 +55,7 @@
             language="JAVA" shortName="FtcMissingOpModeAnnotation" />
         <localInspection displayName="Missing waitForStart() in LinearOpMode" enabledByDefault="true"
             groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingWaitForStartInLinearInspection"
-            language="JAVA"
+            language="JAVA" level="ERROR"
             shortName="FtcMissingWaitForStartInLinear" />
         <localInspection displayName="Nested while inside while(opModeIsActive())" enabledByDefault="true"
             groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcNestedWhileInActiveLoopInspection"
@@ -58,11 +64,12 @@
 
         <postStartupActivity
             implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
-<!--        <beforeRunTaskProvider-->
-<!--            implementationClass="com.gentrifiedapps.ftc_intellij_plugin.settings.FtcBeforeRunTaskProvider" />-->
-<!--        <projectConfigurable-->
-<!--            displayName="FTC Checks"-->
-<!--            instance="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcInspectionConfigurable" />-->
+
+        <!-- Validate run configurations before execution; cancel run on FTC issues -->
+        <runConfigurationExtension implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunConfigurationExtension" />
+
+        <!-- Register custom Run Configuration type: FTC Lint Check -->
+<!--        <configurationType implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcLintConfigurationType"/>-->
     </extensions>
     <actions>
 

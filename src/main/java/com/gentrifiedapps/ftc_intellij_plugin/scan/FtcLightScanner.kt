@@ -4,6 +4,7 @@ import com.intellij.codeInspection.*
 import com.intellij.ide.highlighter.JavaFileType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -131,4 +132,80 @@ object FtcLightScanner {
             .submit(AppExecutorUtil.getAppExecutorService())
     }
 
+    /**
+     * Run a synchronous scan of all TeamCode Java files on the calling thread and update the cache.
+     * Returns the total number of findings detected.
+     */
+    fun scanNow(project: Project, indicator: ProgressIndicator? = null): Int {
+        val scope = GlobalSearchScope.projectScope(project)
+        val files = ReadAction.compute<Collection<VirtualFile>, RuntimeException> {
+            FileTypeIndex.getFiles(JavaFileType.INSTANCE, scope).filter { isTeamCode(project, it) }
+        }
+        if (files.isEmpty()) return 0
+
+        val mgr = InspectionManager.getInstance(project)
+        val spm = SmartPointerManager.getInstance(project)
+        val cache = FtcFindingCache.getInstance(project)
+        var total = 0
+
+        files.forEachIndexed { idx, vf ->
+            indicator?.checkCanceled()
+            indicator?.fraction = (idx + 1).toDouble() / files.size
+
+            val psi = ApplicationManager.getApplication().runReadAction<PsiFile?> {
+                PsiManager.getInstance(project).findFile(vf)
+            } as? PsiJavaFile ?: return@forEachIndexed
+
+            val newFindings = ArrayList<FtcFinding>()
+
+            // Run fatal inspections
+            for (tool in fatalInspections()) {
+                val holder = object : ProblemsHolder(mgr, psi, false) {
+                    override fun registerProblem(d: ProblemDescriptor) {
+                        super.registerProblem(d)
+                        val el = d.psiElement
+                        val ptr =
+                            if (el != null && el.isValid) spm.createSmartPsiElementPointer(el) else null
+                        newFindings += FtcFinding(
+                            tool.shortName,
+                            d.descriptionTemplate,
+                            psi.virtualFile.path,
+                            ptr
+                        )
+                    }
+                }
+                ApplicationManager.getApplication().runReadAction {
+                    psi.accept(tool.buildVisitor(holder, false))
+                }
+            }
+
+            // Include telemetry update findings as well
+            run {
+                val tool = FtcTelemetryUpdateInspection()
+                val holder = object : ProblemsHolder(mgr, psi, false) {
+                    override fun registerProblem(d: ProblemDescriptor) {
+                        super.registerProblem(d)
+                        val el = d.psiElement
+                        val ptr =
+                            if (el != null && el.isValid) spm.createSmartPsiElementPointer(el) else null
+                        newFindings += FtcFinding(
+                            tool.shortName,
+                            d.descriptionTemplate,
+                            psi.virtualFile.path,
+                            ptr
+                        )
+                    }
+                }
+                ApplicationManager.getApplication().runReadAction {
+                    psi.accept(tool.buildVisitor(holder, false))
+                }
+            }
+
+            cache.put(psi.virtualFile.path, newFindings)
+            total += newFindings.size
+        }
+        println("FtcLightScanner: scanNow found $total issue(s) in ${files.size} TeamCode files.")
+        return total
+    }
 }
+

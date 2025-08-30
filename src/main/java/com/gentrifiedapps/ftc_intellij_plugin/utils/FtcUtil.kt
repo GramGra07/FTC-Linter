@@ -2,13 +2,10 @@ package com.gentrifiedapps.ftc_intellij_plugin.utils
 
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiClass
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiLiteralExpression
-import com.intellij.psi.PsiMethod
+import com.intellij.psi.*
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.InheritanceUtil
+import java.util.Locale
 
 object FtcUtil {
     const val OPMODE = "com.qualcomm.robotcore.eventloop.opmode.OpMode"
@@ -19,12 +16,8 @@ object FtcUtil {
     fun findClass(project: Project, fqn: String): PsiClass? =
         JavaPsiFacade.getInstance(project).findClass(fqn, GlobalSearchScope.allScope(project))
 
-    // Prefer deep inheritance checks (handles indirect inheritance)
-    fun isOpMode(cls: PsiClass): Boolean =
-        InheritanceUtil.isInheritor(cls, OPMODE)
-
-    fun isLinearOpMode(cls: PsiClass): Boolean =
-        InheritanceUtil.isInheritor(cls, LINEAR_OPMODE)
+    fun isOpMode(cls: PsiClass): Boolean = InheritanceUtil.isInheritor(cls, OPMODE)
+    fun isLinearOpMode(cls: PsiClass): Boolean = InheritanceUtil.isInheritor(cls, LINEAR_OPMODE)
 
     fun hasOpModeAnnotation(cls: PsiClass): Boolean =
         cls.modifierList?.annotations?.any {
@@ -49,6 +42,9 @@ object FtcUtil {
 
     fun isInTeamCode(element: PsiElement): Boolean {
         val module = ModuleUtilCore.findModuleForPsiElement(element)
-        return module?.name?.contains("TeamCode", ignoreCase = true) == true
+        if (module?.name?.contains("TeamCode", ignoreCase = true) == true) return true
+        val vf = element.containingFile?.virtualFile ?: return false
+        val path = vf.path.lowercase(Locale.getDefault())
+        return path.contains("/teamcode/") || path.contains("\\teamcode\\") || path.endsWith("/teamcode") || path.endsWith("\\teamcode")
     }
 }

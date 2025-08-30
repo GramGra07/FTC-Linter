@@ -10,7 +10,6 @@ class FtcFindingCache(private val project: Project) {
     private val findingsByPath = ConcurrentHashMap<String, List<FtcFinding>>()
     private val dirtyPaths = CopyOnWriteArraySet<String>()
 
-    // ✅ Unique tokens for coalescing (objects, not strings)
     private val warmupKey: Any = Any()
     private val batchKeyMap = ConcurrentHashMap<String, Any>()
 

@@ -2,12 +2,12 @@
 plugins {
     id("java")
     id("org.jetbrains.intellij.platform") version "2.7.2"
-//    id("org.openjfx.javafxplugin") version "0.1.0"
+    id("org.openjfx.javafxplugin") version "0.1.0"
     kotlin("jvm") version "2.1.20"
 }
 
 group = "com.gentrifiedapps.ftclinter"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     mavenCentral()

@@ -1,0 +1,48 @@
+<html>
+<body>
+<p>Reports when multiple TeamCode packages or source roots are detected in the project, which can lead to duplicated OpModes, conflicting classpaths, and unpredictable FTC behavior.</p>
+
+<p>This inspection expects a single TeamCode module and package in an FTC project. It flags cases such as:</p>
+<ul>
+  <li>More than one module name contains “TeamCode”.</li>
+  <li>Multiple source roots or directories contain a TeamCode segment (e.g., <code>/TeamCode/</code> or <code>\TeamCode\</code>).</li>
+  <li>More than one Java/Kotlin package contains <code>teamcode</code> (for example, <code>com.myteam.teamcode</code> and <code>org.other.teamcode</code>).</li>
+</ul>
+
+<p><b>Why it matters</b></p>
+<ul>
+  <li>OpModes may be discovered twice or not at all depending on classpath order.</li>
+  <li>Build and IDE tooling can index/compile unintended sources.</li>
+  <li>Refactors across multiple TeamCode packages are error‑prone.</li>
+</ul>
+
+<p><b>How to fix</b></p>
+<ul>
+  <li>Keep exactly one TeamCode module and one <code>teamcode</code> package in the project.</li>
+  <li>Move or delete stray TeamCode folders and consolidate code into a single package (for example, <code>com.myteam.teamcode</code>).</li>
+  <li>Update project/module names so that only the intended module contains “TeamCode”.</li>
+</ul>
+
+<p><b>Examples</b></p>
+<pre><code class="language-java">// Two TeamCode packages in the same project (will be flagged)
+package com.myteam.teamcode;    // TeamCode #1
+public class DriveTeleOp {}
+</code></pre>
+<pre><code class="language-java">package org.other.teamcode;    // TeamCode #2
+public class AutoBlue {}
+</code></pre>
+
+<!-- tooltip end -->
+
+<p><b>Configuration</b></p>
+<ul>
+  <li>Enabled by default under <i>FTC Linter</i> inspections.</li>
+  <li>Settings: Settings/Preferences | Editor | Inspections | FTC Linter | Multiple TeamCode packages detected.</li>
+</ul>
+
+<p><b>Notes</b></p>
+<ul>
+  <li>Detection uses module names, directory paths, and package names containing “TeamCode”/“teamcode”.</li>
+</ul>
+</body>
+</html>
