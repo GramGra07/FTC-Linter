@@ -208,4 +208,3 @@ object FtcLightScanner {
         return total
     }
 }
-
