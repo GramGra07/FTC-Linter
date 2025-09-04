@@ -3,7 +3,7 @@ import kotlin.collections.listOf
 // ftc-intellij-plugin/build.gradle.kts
 plugins {
     id("java")
-    id("org.jetbrains.intellij.platform") version "2.7.2"
+    id("org.jetbrains.intellij.platform") version "2.8.0"
 //    id("org.openjfx.javafxplugin") version "0.1.0"
     kotlin("jvm") version "2.1.20"
 }
