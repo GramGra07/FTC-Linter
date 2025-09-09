@@ -19,14 +19,14 @@ class RunCheckerStartup : ProjectActivity {
             VirtualFileManager.VFS_CHANGES,
             object : BulkFileListener {
                 override fun after(events: List<VFileEvent>) {
-                    val changed = events.mapNotNull { it.file }
-                        .filter { it.fileType == JavaFileType.INSTANCE }
+                    val changed = events.map{ it.file }
+                        .filter { it?.fileType == JavaFileType.INSTANCE }
                         .filter { vf ->
-                            val module = ModuleUtilCore.findModuleForFile(vf, project)
+                            val module = ModuleUtilCore.findModuleForFile(vf!!, project)
                             module?.name.equals("TeamCode", ignoreCase = true)
                         }
                     if (changed.isNotEmpty()) {
-                        FtcLightScanner.scheduleLightScan(project, changed)
+                        FtcLightScanner.scheduleLightScan(project, changed.filterNotNull())
                     }
                 }
             }

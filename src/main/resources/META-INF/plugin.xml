@@ -66,7 +66,7 @@
             implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
 
         <!-- Validate run configurations before execution; cancel run on FTC issues -->
-        <runConfigurationExtension implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunConfigurationExtension" />
+<!--        <runConfigurationExtension implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunConfigurationExtension" />-->
 
         <!-- Register custom Run Configuration type: FTC Lint Check -->
 <!--        <configurationType implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcLintConfigurationType"/>-->

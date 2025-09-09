@@ -63,7 +63,7 @@ object FtcLightScanner {
         if (teamFiles.isEmpty()) return
 
         val cache = FtcFindingCache.getInstance(project)
-        val paths = teamFiles.mapNotNull { it.path }
+        val paths = teamFiles.map { it.path }
         cache.markDirty(paths)
 
         ReadAction
