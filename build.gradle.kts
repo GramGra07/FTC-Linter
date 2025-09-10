@@ -5,7 +5,7 @@ plugins {
     id("java")
     id("org.jetbrains.intellij.platform") version "2.7.2"
 //    id("org.openjfx.javafxplugin") version "0.1.0"
-    kotlin("jvm") version "2.1.20"
+    kotlin("jvm") version "2.2.20"
 }
 
 group = "com.gentrifiedapps.ftclinter"
