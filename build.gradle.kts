@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "com.gentrifiedapps.ftclinter"
-version = "0.0.6"
+version = "0.0.7"
 
 repositories {
     mavenCentral()
@@ -43,7 +43,7 @@ intellijPlatform {
     pluginConfiguration {
         ideaVersion {
             sinceBuild.set("251")
-            untilBuild.set("251.*")
+            untilBuild.set("252.*")
         }
     }
 }
