@@ -19,7 +19,7 @@ import javax.swing.SwingConstants
 class WebsiteToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val websites = linkedMapOf(
-            "Temp" to "http://192.168.86.244:5173/dash/",
+//            "Temp" to "http://192.168.86.244:5173/dash/",
             "Control Hub" to "http://192.168.43.1:8080/dash",
             "RC Phone" to "http://192.168.49.1:8080/dash",
 //            "Google" to "https://google.com"
