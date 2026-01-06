@@ -1,122 +1,76 @@
 package com.gentrifiedapps.ftc_intellij_plugin.actions
 
+import com.intellij.ide.browsers.BrowserLauncher
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
-import com.intellij.ui.components.JBScrollPane
-import com.intellij.ui.components.JBTextField
+import com.intellij.ui.components.JBLabel
 import com.intellij.ui.content.ContentFactory
+import com.intellij.ui.jcef.JBCefApp
+import com.intellij.ui.jcef.JBCefBrowser
 import java.awt.BorderLayout
-import java.net.URL
-import javax.swing.JEditorPane
+import java.awt.FlowLayout
+import javax.swing.JButton
 import javax.swing.JPanel
-import javax.swing.SwingWorker
-import javax.swing.event.HyperlinkEvent
+import javax.swing.SwingConstants
 
 class WebsiteToolWindowFactory : ToolWindowFactory {
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val websites = linkedMapOf(
+            "Temp" to "http://192.168.86.244:5173/dash/",
             "Control Hub" to "http://192.168.43.1:8080/dash",
             "RC Phone" to "http://192.168.49.1:8080/dash",
-            "test" to "https://google.com"
+//            "Google" to "https://google.com"
         )
 
-        val panel = WebsitePanel(websites)
+        // Safety check: JCEF requires a specific JetBrains Runtime.
+        // If it's not available, we show a fallback UI instead of crashing.
+        val panel=
+            JcefFallbackPanel(websites)
+
         val content = ContentFactory.getInstance().createContent(panel, "", false)
         toolWindow.contentManager.addContent(content)
-        // Register panel to be disposed with the content
-        content.setDisposer(panel)
+        
+        if (panel is Disposable) {
+            content.setDisposer(panel)
+        }
+    }
+
+    private fun isJcefSupported(): Boolean {
+        return try {
+            JBCefApp.isSupported()
+        } catch (t: Throwable) {
+            false
+        }
     }
 }
 
-private class WebsitePanel(
-    private val websites: Map<String, String>
-) : JPanel(BorderLayout()), Disposable {
-
-    private val editorPane = JEditorPane().apply {
-        contentType = "text/html"
-        isEditable = false
-    }
-
-    private val scrollPane = JBScrollPane(editorPane)
-
-    @Volatile
-    private var loader: SwingWorker<Unit, Unit>? = null
-
+/**
+ * Fallback UI shown when JCEF (Chromium) is not available in the IDE's runtime.
+ * Allows the user to open the dashboard in their system browser.
+ */
+private class JcefFallbackPanel(private val websites: Map<String, String>) : JPanel(BorderLayout()) {
     init {
-        // Top bar: site selector and reload button
-        val topBar = JPanel(BorderLayout())
+        val message = "<html><center>"+
+                "Please use the button below to open FTC Dashboard in your system browser.</center></html>"
+        
+        add(JBLabel(message, SwingConstants.CENTER), BorderLayout.CENTER)
+
+        val bottomPanel = JPanel(FlowLayout())
         val combo = ComboBox(websites.keys.toTypedArray())
-        val reload = javax.swing.JButton("Reload")
-        topBar.add(combo, BorderLayout.CENTER)
-        topBar.add(reload, BorderLayout.EAST)
-        add(topBar, BorderLayout.NORTH)
+        val openButton = JButton("Open in System Browser")
+        
+        bottomPanel.add(combo)
+        bottomPanel.add(openButton)
+        add(bottomPanel, BorderLayout.SOUTH)
 
-        // Main viewer
-        add(scrollPane, BorderLayout.CENTER)
-
-        // URL indicator
-        val urlField = JBTextField().apply {
-            isEditable = false
-            text = websites.values.first()
-        }
-        add(urlField, BorderLayout.SOUTH)
-
-        // Hyperlink handling
-        editorPane.addHyperlinkListener { e: HyperlinkEvent ->
-            if (e.eventType == HyperlinkEvent.EventType.ACTIVATED) {
-                val u = e.url?.toString() ?: return@addHyperlinkListener
-                urlField.text = u
-                loadUrl(u)
-            }
-        }
-
-        // Load initial page
-        loadUrl(websites.values.first())
-
-        // Selection changes
-        combo.addActionListener {
+        openButton.addActionListener {
             val selected = combo.selectedItem as String
-            val u = websites.getValue(selected)
-            urlField.text = u
-            loadUrl(u)
-        }
-
-        // Reload
-        reload.addActionListener {
-            loadUrl(urlField.text)
-        }
-    }
-
-    private fun loadUrl(url: String) {
-        loader?.cancel(true)
-
-        loader = object : SwingWorker<Unit, Unit>() {
-            override fun doInBackground() {
-                try {
-                    editorPane.setPage(URL(url))
-                } catch (t: Throwable) {
-                    val err = "<html><body><h3>Failed to load:</h3><p>${escapeHtml(url)}</p><pre>${escapeHtml(t.message ?: t.toString())}</pre></body></html>"
-                    javax.swing.SwingUtilities.invokeLater { editorPane.text = err }
-                }
-            }
-        }
-
-        loader?.execute()
-    }
-
-    private fun escapeHtml(s: String): String = s
-        .replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-
-    override fun dispose() {
-        try {
-            loader?.cancel(true)
-        } catch (_: Throwable) {
-            // ignore
+            val url = websites[selected] ?: return@addActionListener
+            // Use instance to avoid conflicts with other getInstance() methods
+            BrowserLauncher.instance.browse(url)
         }
     }
 }

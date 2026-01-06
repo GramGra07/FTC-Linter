@@ -3,9 +3,7 @@
     <id>com.gentrifiedapps.ftc_intellij_plugin</id>
     <name>FTC Linter</name>
     <vendor email="gentrified.apps@gmail.com">GentrifiedApps</vendor>
-    <description>Expansive inspections for FTC Java projects (IntelliJ / Android
-        Studio).
-    </description>
+    <description>Expansive inspections for FTC Java projects (IntelliJ / Android Studio).</description>
     <change-notes>FIRST release</change-notes>
 
     <depends>com.intellij.modules.platform</depends>
@@ -13,108 +11,57 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FTC Linter" isLogByDefault="true" />
-        <!-- Used by ADB actions -->
+        
+        <beforeRunTaskProvider 
+            id="ftc.beforeRun.teamcode.guard"
+            implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcTeamCodeBeforeRunTaskProvider" />
+
         <toolWindow
             id="FTC Dashboard"
             anchor="right"
             factoryClass="com.gentrifiedapps.ftc_intellij_plugin.actions.WebsiteToolWindowFactory"
-
-        icon= "/icons/pluginIcon.svg"
+            icon="/icons/pluginIcon.svg"
             secondary="false"/>
-        <localInspection
-            language=""
-            shortName="FtcDualTeamCodeIdentifier"
-            displayName="Multiple TeamCode packages detected"
-            groupPath="FTC Linter"
-            enabledByDefault="true"
-            level="ERROR"
-            implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcDualTeamCodeIdentifier"/>
-        <localInspection displayName="Accessing hardwareMap in constructor" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcHardwareInConstructorInspection"
-            language="JAVA"
-            shortName="FtcHardwareInConstructor" />
-        <localInspection displayName="hardwareMap access in field initializer" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcFieldInitializerHardwareInspection"
-            language="JAVA"
-            shortName="FtcFieldInitializerHardware" />
-        <localInspection displayName="telemetry.addData without telemetry.update()" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcTelemetryUpdateInspection"
-            language="JAVA"
-            shortName="FtcTelemetryUpdate" />
 
-        <localInspection displayName="Thread.sleep() used in OpMode" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcThreadSleepInspection"
-            language="JAVA"
-            shortName="FtcThreadSleep" />
-        <localInspection displayName="Accessing gamepad in constructor/initializer" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcGamepadInConstructorInspection"
-            language="JAVA"
-            shortName="FtcGamepadInConstructor" />
-        <localInspection displayName="Public OpMode missing @TeleOp/@Autonomous" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingOpModeAnnotationInspection"
-            language="JAVA" shortName="FtcMissingOpModeAnnotation" />
-        <localInspection displayName="Missing waitForStart() in LinearOpMode" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingWaitForStartInLinearInspection"
-            language="JAVA" level="ERROR"
-            shortName="FtcMissingWaitForStartInLinear" />
-        <localInspection displayName="Nested while inside while(opModeIsActive())" enabledByDefault="true"
-            groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcNestedWhileInActiveLoopInspection"
-            language="JAVA"
-            shortName="FtcNestedWhileInActiveLoop" />
+        <!-- Inspections -->
+        <localInspection language="" shortName="FtcDualTeamCodeIdentifier" displayName="Multiple TeamCode packages detected" groupPath="FTC Linter" enabledByDefault="true" level="ERROR" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcDualTeamCodeIdentifier"/>
+        <localInspection displayName="Accessing hardwareMap in constructor" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcHardwareInConstructorInspection" language="JAVA" shortName="FtcHardwareInConstructor" />
+        <localInspection displayName="hardwareMap access in field initializer" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcFieldInitializerHardwareInspection" language="JAVA" shortName="FtcFieldInitializerHardware" />
+        <localInspection displayName="telemetry.addData without telemetry.update()" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcTelemetryUpdateInspection" language="JAVA" shortName="FtcTelemetryUpdate" />
+        <localInspection displayName="Thread.sleep() used in OpMode" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcThreadSleepInspection" language="JAVA" shortName="FtcThreadSleep" />
+        <localInspection displayName="Accessing gamepad in constructor/initializer" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcGamepadInConstructorInspection" language="JAVA" shortName="FtcGamepadInConstructor" />
+        <localInspection displayName="Public OpMode missing @TeleOp/@Autonomous" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingOpModeAnnotationInspection" language="JAVA" shortName="FtcMissingOpModeAnnotation" />
+        <localInspection displayName="Missing waitForStart() in LinearOpMode" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcMissingWaitForStartInLinearInspection" language="JAVA" level="ERROR" shortName="FtcMissingWaitForStartInLinear" />
+        <localInspection displayName="Nested while inside while(opModeIsActive())" enabledByDefault="true" groupPath="FTC Linter" implementationClass="com.gentrifiedapps.ftc_intellij_plugin.inspections.FtcNestedWhileInActiveLoopInspection" language="JAVA" shortName="FtcNestedWhileInActiveLoop" />
 
-        <postStartupActivity
-            implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
-
-        <!-- Validate run configurations before execution; cancel run on FTC issues -->
-<!--        <runConfigurationExtension implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcRunConfigurationExtension" />-->
-
-        <!-- Register custom Run Configuration type: FTC Lint Check -->
-<!--        <configurationType implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcLintConfigurationType"/>-->
+        <postStartupActivity implementation="com.gentrifiedapps.ftc_intellij_plugin.RunCheckerStartup" />
     </extensions>
+
     <actions>
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.AttachBeforeRunAction"
+                class="com.gentrifiedapps.ftc_intellij_plugin.actions.AttachBeforeRunAction"
+                text="Show Before Run Instructions"
+                description="Shows instructions on how to enable the FTC TeamCode guard">
+            <add-to-group group-id="HelpMenu" anchor="last"/>
+        </action>
 
-        <action
-            id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele"
-            class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele"
-            text="New TeleOp"
-            description="Creates a new TeleOp OpMode class"
-            icon="AllIcons.Actions.GroupByModule">
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele" class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele" text="New TeleOp" description="Creates a new TeleOp OpMode class" icon="AllIcons.Actions.GroupByModule">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
 
-        <action
-            id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous"
-            class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous"
-            text="New Autonomous"
-            description="Creates a new Autonomous OpMode class"
-            icon="AllIcons.Actions.GroupByModule">
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous" class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewAutonomous" text="New Autonomous" description="Creates a new Autonomous OpMode class" icon="AllIcons.Actions.GroupByModule">
             <add-to-group group-id="NewGroup" anchor="last"/>
         </action>
 
-        <!-- New: Tools > Connect over Wi‑Fi Direct (runs `adb connect`) -->
-        <action
-            id="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction"
-            class="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction"
-            text="Connect over Wi‑Fi Direct"
-            description="Run 'adb connect &lt;ip:port&gt;' to connect to the robot over Wi‑Fi Direct">
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction" class="com.gentrifiedapps.ftc_intellij_plugin.actions.ConnectWifiDirectAction" text="Connect over Wi‑Fi Direct" description="Run 'adb connect ip:port' to connect to the robot over Wi‑Fi Direct">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
 
-        <!-- New: Tools > Disconnect Wi‑Fi Device (runs `adb disconnect [ip:port]`) -->
-        <action
-            id="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction"
-            class="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction"
-            text="Disconnect Wi‑Fi Device"
-            description="Run 'adb disconnect [ip:port]' to disconnect a device or all if omitted">
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction" class="com.gentrifiedapps.ftc_intellij_plugin.actions.DisconnectWifiDirectAction" text="Disconnect Wi‑Fi Device" description="Run 'adb disconnect [ip:port]' to disconnect a device or all if omitted">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
 
-        <!-- New: Tools > Kill ADB Server (runs `adb kill-server`) -->
-        <action
-            id="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction"
-            class="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction"
-            text="Kill ADB Server"
-            description="Run 'adb kill-server' to stop the ADB daemon">
+        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction" class="com.gentrifiedapps.ftc_intellij_plugin.actions.KillAdbServerAction" text="Kill ADB Server" description="Run 'adb kill-server' to stop the ADB daemon">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
