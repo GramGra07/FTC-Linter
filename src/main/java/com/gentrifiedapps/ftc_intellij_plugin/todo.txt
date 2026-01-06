@@ -1,3 +1,0 @@
-Test adb actions
-Test ftc dash - docs
-Block runs

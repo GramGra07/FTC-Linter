@@ -11,6 +11,8 @@ import com.intellij.openapi.module.ModuleUtilCore
 
 class RunCheckerStartup : ProjectActivity {
     override suspend fun execute(project: Project) {
+        // Show the Before Run prompt if not blocked
+
         // Warm-up background scan (TeamCode-only inside scanner)
         FtcLightScanner.scheduleProjectWarmup(project)
 

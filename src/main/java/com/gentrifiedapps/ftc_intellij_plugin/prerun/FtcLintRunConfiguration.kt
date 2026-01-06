@@ -22,8 +22,6 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBLabel
-import org.jetbrains.kotlin.idea.KotlinFileType
-import org.jetbrains.kotlin.psi.KtFile
 import java.awt.BorderLayout
 import java.nio.charset.StandardCharsets
 import java.util.Locale
@@ -56,18 +54,16 @@ class FtcLintRunConfiguration(
 
             counts = ReadAction.compute<Counts, RuntimeException> {
                 val scope = GlobalSearchScope.projectScope(project)
-                // Prefer indexed search
-                val javaByType = FileTypeIndex.getFiles(JavaFileType.INSTANCE, scope)
-                val javaByExt = FilenameIndex.getAllFilesByExt(project, "java", scope)
+                
+                // Search for Java files
                 val javaFiles = LinkedHashSet<VirtualFile>().apply {
-                    addAll(javaByType)
-                    addAll(javaByExt)
+                    addAll(FileTypeIndex.getFiles(JavaFileType.INSTANCE, scope))
+                    addAll(FilenameIndex.getAllFilesByExt(project, "java", scope))
                 }
-                val ktByType = FileTypeIndex.getFiles(KotlinFileType.INSTANCE, scope)
-                val ktByExt = FilenameIndex.getAllFilesByExt(project, "kt", scope)
+                
+                // Search for Kotlin files by extension to avoid direct dependency on KotlinFileType
                 val ktFiles = LinkedHashSet<VirtualFile>().apply {
-                    addAll(ktByType)
-                    addAll(ktByExt)
+                    addAll(FilenameIndex.getAllFilesByExt(project, "kt", scope))
                 }
 
                 // Fallback: enumerate TeamCode module source roots if indexes are empty
@@ -99,9 +95,14 @@ class FtcLintRunConfiguration(
                     if (module?.name?.contains("TeamCode", ignoreCase = true) == true) return true
                     val pathLc = vf.path.lowercase(Locale.getDefault())
                     if (pathLc.contains("/teamcode/") || pathLc.contains("\\teamcode\\") || pathLc.endsWith("/teamcode") || pathLc.endsWith("\\teamcode")) return true
-                    when (psi) {
-                        is PsiJavaFile -> if (psi.packageName.contains("teamcode", ignoreCase = true)) return true
-                        is KtFile -> if (psi.packageFqName.asString().contains("teamcode", ignoreCase = true)) return true
+                    
+                    if (psi is PsiJavaFile) {
+                        if (psi.packageName.contains("teamcode", ignoreCase = true)) return true
+                    }
+                    // For Kotlin files, we check the package name via text to avoid KtFile dependency
+                    if (vf.extension == "kt" && psi != null) {
+                        val firstLines = psi.text.split("\n").take(10)
+                        if (firstLines.any { it.trim().startsWith("package") && it.contains("teamcode", ignoreCase = true) }) return true
                     }
                     return false
                 }
@@ -126,6 +127,7 @@ class FtcLintRunConfiguration(
                     val psi = psiManager.findFile(vf)
                     if (!isTeam(vf, psi)) continue
                     team++
+                    // Check for syntax errors generically
                     val pe = PsiTreeUtil.findChildOfType(psi, PsiErrorElement::class.java)
                     if (pe != null) ktParse++
                 }

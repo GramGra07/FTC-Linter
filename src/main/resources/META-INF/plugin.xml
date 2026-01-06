@@ -12,9 +12,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="FTC Linter" isLogByDefault="true" />
         
-        <beforeRunTaskProvider 
-            id="ftc.beforeRun.teamcode.guard"
-            implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcTeamCodeBeforeRunTaskProvider" />
+        <configurationType implementation="com.gentrifiedapps.ftc_intellij_plugin.prerun.FtcLintConfigurationType"/>
 
         <toolWindow
             id="FTC Dashboard"
@@ -38,12 +36,6 @@
     </extensions>
 
     <actions>
-        <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.AttachBeforeRunAction"
-                class="com.gentrifiedapps.ftc_intellij_plugin.actions.AttachBeforeRunAction"
-                text="Show Before Run Instructions"
-                description="Shows instructions on how to enable the FTC TeamCode guard">
-            <add-to-group group-id="HelpMenu" anchor="last"/>
-        </action>
 
         <action id="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele" class="com.gentrifiedapps.ftc_intellij_plugin.actions.NewTele" text="New TeleOp" description="Creates a new TeleOp OpMode class" icon="AllIcons.Actions.GroupByModule">
             <add-to-group group-id="NewGroup" anchor="last"/>
